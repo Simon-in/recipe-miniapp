@@ -1,0 +1,84 @@
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索菜名或食材"
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+      />
+      <text wx:if="{{keyword}}" class="clear-btn" bindtap="onClearSearch">✕</text>
+    </view>
+  </view>
+
+  <!-- 分类筛选 -->
+  <scroll-view class="category-scroll" scroll-x enable-flex>
+    <view
+      wx:for="{{categories}}"
+      wx:key="*this"
+      class="category-item {{category === item ? 'active' : ''}}"
+      data-category="{{item}}"
+      bindtap="onCategoryTap"
+    >{{item}}</view>
+  </scroll-view>
+
+  <!-- 统计 -->
+  <view class="stats" wx:if="{{total > 0}}">
+    <text>共 {{total}} 道食谱</text>
+  </view>
+
+  <!-- 食谱列表 -->
+  <view wx:if="{{recipes.length > 0}}" class="recipe-list">
+    <view
+      wx:for="{{recipes}}"
+      wx:key="id"
+      class="recipe-card"
+      data-id="{{item.id}}"
+      bindtap="onRecipeTap"
+    >
+      <view class="recipe-card-body">
+        <image
+          wx:if="{{item.coverImage}}"
+          class="recipe-thumb"
+          src="{{item.coverImage}}"
+          mode="aspectFill"
+        />
+        <view wx:else class="recipe-thumb recipe-thumb-placeholder">
+          <text>🍽️</text>
+        </view>
+        <view class="recipe-content">
+          <view class="recipe-header">
+            <text class="recipe-name">{{item.name}}</text>
+            <text class="recipe-time">{{item.cookTime}}分钟</text>
+          </view>
+          <view class="recipe-meta">
+            <text class="tag tag-orange">{{item.category}}</text>
+            <text class="tag {{item.difficulty === '简单' ? 'tag-green' : 'tag-orange'}}">{{item.difficulty}}</text>
+            <text class="servings">{{item.servings}}人份</text>
+          </view>
+          <view class="recipe-ingredients">
+            <text wx:for="{{item.ingredients}}" wx:for-item="ing" wx:key="name" wx:if="{{index < 3}}">
+              {{ing.name}}{{index < 2 && index < item.ingredients.length - 1 ? '、' : ''}}
+            </text>
+            <text wx:if="{{item.ingredients.length > 3}}"> 等{{item.ingredients.length}}种食材</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:else class="empty-state">
+    <text class="empty-icon">🍳</text>
+    <text class="empty-text">{{keyword || category !== '全部' ? '没有找到匹配的食谱' : '还没有食谱，快来添加吧'}}</text>
+    <button class="btn-primary" bindtap="onAddTap">添加食谱</button>
+  </view>
+
+  <!-- 悬浮添加按钮 -->
+  <view class="fab" bindtap="onAddTap">
+    <text class="fab-icon">+</text>
+  </view>
+</view>
