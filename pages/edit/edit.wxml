@@ -1,0 +1,163 @@
+<view class="container">
+  <!-- 封面图 -->
+  <view class="card form-section">
+    <view class="form-title">封面图片（选填）</view>
+    <view class="image-upload">
+      <view wx:if="{{coverImage}}" class="image-preview-wrap">
+        <image
+          class="image-preview"
+          src="{{coverImage}}"
+          mode="aspectFill"
+          bindtap="onPreviewImage"
+        />
+        <view class="image-actions">
+          <text class="image-action" bindtap="onChooseImage">更换</text>
+          <text class="image-action remove" bindtap="onRemoveImage">删除</text>
+        </view>
+      </view>
+      <view wx:else class="image-placeholder" bindtap="onChooseImage">
+        <text class="placeholder-icon">📷</text>
+        <text class="placeholder-text">点击上传封面图</text>
+        <text class="placeholder-hint">支持相册或拍照</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="card form-section">
+    <view class="form-title">基本信息</view>
+
+    <view class="form-item">
+      <text class="form-label required">菜名</text>
+      <input
+        class="form-input"
+        placeholder="例如：红烧肉"
+        value="{{form.name}}"
+        data-field="name"
+        bindinput="onFieldInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">分类</text>
+      <picker mode="selector" range="{{categories}}" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view class="form-picker">{{form.category}} ›</view>
+      </picker>
+    </view>
+
+    <view class="form-row">
+      <view class="form-item half">
+        <text class="form-label required">烹饪时间</text>
+        <view class="input-with-unit">
+          <input
+            class="form-input"
+            type="number"
+            placeholder="15"
+            value="{{form.cookTime}}"
+            data-field="cookTime"
+            bindinput="onFieldInput"
+          />
+          <text class="unit">分钟</text>
+        </view>
+      </view>
+      <view class="form-item half">
+        <text class="form-label required">人份</text>
+        <view class="input-with-unit">
+          <input
+            class="form-input"
+            type="number"
+            placeholder="2"
+            value="{{form.servings}}"
+            data-field="servings"
+            bindinput="onFieldInput"
+          />
+          <text class="unit">人</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">难度</text>
+      <picker mode="selector" range="{{difficulties}}" value="{{difficultyIndex}}" bindchange="onDifficultyChange">
+        <view class="form-picker">{{form.difficulty}} ›</view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 食材 -->
+  <view class="card form-section">
+    <view class="form-title-row">
+      <text class="form-title">食材清单</text>
+      <text class="add-link" bindtap="onAddIngredient">+ 添加</text>
+    </view>
+
+    <view wx:for="{{form.ingredients}}" wx:key="index" class="dynamic-row">
+      <input
+        class="dynamic-input name-input"
+        placeholder="食材名称"
+        value="{{item.name}}"
+        data-index="{{index}}"
+        data-field="name"
+        bindinput="onIngredientInput"
+      />
+      <input
+        class="dynamic-input amount-input"
+        placeholder="用量"
+        value="{{item.amount}}"
+        data-index="{{index}}"
+        data-field="amount"
+        bindinput="onIngredientInput"
+      />
+      <text
+        wx:if="{{form.ingredients.length > 1}}"
+        class="remove-btn"
+        data-index="{{index}}"
+        bindtap="onRemoveIngredient"
+      >✕</text>
+    </view>
+  </view>
+
+  <!-- 步骤 -->
+  <view class="card form-section">
+    <view class="form-title-row">
+      <text class="form-title">烹饪步骤</text>
+      <text class="add-link" bindtap="onAddStep">+ 添加</text>
+    </view>
+
+    <view wx:for="{{form.steps}}" wx:key="index" class="step-row">
+      <view class="step-badge">{{index + 1}}</view>
+      <textarea
+        class="step-textarea"
+        placeholder="描述这一步怎么做..."
+        value="{{item}}"
+        data-index="{{index}}"
+        bindinput="onStepInput"
+        auto-height
+      />
+      <text
+        wx:if="{{form.steps.length > 1}}"
+        class="remove-btn"
+        data-index="{{index}}"
+        bindtap="onRemoveStep"
+      >✕</text>
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="card form-section">
+    <view class="form-title">小贴士（选填）</view>
+    <textarea
+      class="note-textarea"
+      placeholder="记录你的烹饪心得..."
+      value="{{form.note}}"
+      data-field="note"
+      bindinput="onFieldInput"
+      maxlength="500"
+    />
+  </view>
+
+  <!-- 提交 -->
+  <button class="btn-primary submit-btn" bindtap="onSubmit">
+    {{isEdit ? '保存修改' : '添加食谱'}}
+  </button>
+</view>
